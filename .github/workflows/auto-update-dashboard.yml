@@ -58,8 +58,9 @@ jobs:
           SCOPUS_API_KEY: ${{ secrets.SCOPUSAPIKEY }}
           SCOPUS_AUTHOR_ID: "55877289000"
           ORCID_ID: "0000-0002-4978-1499"
-          OPENALEX_EMAIL: ${{ vars.OPENALEX_EMAIL }}
+          OPENALEX_EMAIL: ${{ vars.OPENALEXEMAIL }}
           OPENALEX_API_KEY: ${{ secrets.OPENALEXAPIKEY }}
+          SCOPUS_INSTTOKEN: ${{ secrets.SCOPUSINSTTOKEN }}
           GIT_AUTO_PUSH: "1"
           GIT_BRANCH: "main"
         run: |
