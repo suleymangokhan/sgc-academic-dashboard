@@ -1,0 +1,39 @@
+name: Auto-update academic dashboard
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1'
+
+permissions:
+  contents: write
+
+jobs:
+  update-dashboard:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Update dashboard data from Scopus and OpenAlex
+        env:
+          SCOPUS_API_KEY: ${{ secrets.SCOPUSAPIKEY }}
+          SCOPUS_AUTHOR_ID: "55877289000"
+          ORCID_ID: "0000-0002-4978-1499"
+          GIT_AUTO_PUSH: "1"
+          GIT_BRANCH: "main"
+        run: python auto_sync_dashboard.py --data dashboard_data.json --out-js dashboard_data.js --verbose
