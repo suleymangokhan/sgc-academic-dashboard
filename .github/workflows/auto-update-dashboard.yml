@@ -8,21 +8,45 @@ on:
 permissions:
   contents: write
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   update-dashboard:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
 
+      - name: Show repository files
+        run: |
+          pwd
+          ls -la
+          echo "---- workflow folder ----"
+          ls -la .github/workflows || true
+          echo "---- python version ----"
+          python --version
+
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Check required secret
+        env:
+          SCOPUS_API_KEY: ${{ secrets.SCOPUSAPIKEY }}
+        run: |
+          if [ -z "$SCOPUS_API_KEY" ]; then
+            echo "ERROR: SCOPUSAPIKEY secret is missing."
+            exit 1
+          fi
+          echo "SCOPUSAPIKEY secret exists."
 
       - name: Configure git identity
         run: |
@@ -36,4 +60,5 @@ jobs:
           ORCID_ID: "0000-0002-4978-1499"
           GIT_AUTO_PUSH: "1"
           GIT_BRANCH: "main"
-        run: python auto_sync_dashboard.py --data dashboard_data.json --out-js dashboard_data.js --verbose
+        run: |
+          python auto_sync_dashboard.py --data dashboard_data.json --out-js dashboard_data.js --verbose
