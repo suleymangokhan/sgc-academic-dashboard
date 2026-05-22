@@ -1056,31 +1056,50 @@ function renderSubjectAreas() {
 
 function renderCombo(records) {
   const yr = aggYear(records);
+  const years = yr.map(d => String(d.Year));
+  const publicationCounts = yr.map(d => d.Publications);
+  const citationCounts = yr.map(d => d.Cites);
+
   Plotly.newPlot('comboChart', [
     {
-      x: yr.map(d=>d.Year),
-      y: yr.map(d=>d.Publications),
+      x: years,
+      y: publicationCounts,
+      customdata: citationCounts,
       type:'bar',
       name:'Yayın sayısı',
-      marker:{color:'rgba(167,139,250,0.70)'}
+      marker:{color:'rgba(167,139,250,0.70)'},
+      hovertemplate:'<b>%{x}</b><br>Atıf sayısı: %{customdata:,}<br>Yayın sayısı: %{y:,}<extra></extra>'
     },
     {
-      x: yr.map(d=>d.Year),
-      y: yr.map(d=>d.Cites),
+      x: years,
+      y: citationCounts,
+      customdata: publicationCounts,
       type:'scatter',
       mode:'lines+markers+text',
-      text: yr.map(d=>d.Cites),
+      text: citationCounts,
       textposition:'top center',
       name:'Toplam atıf',
       yaxis:'y2',
       line:{color:'#4338ca',width:3},
-      marker:{size:8,color:'#4338ca'}
+      marker:{size:8,color:'#4338ca'},
+      hovertemplate:'<b>%{x}</b><br>Atıf sayısı: %{y:,}<br>Yayın sayısı: %{customdata:,}<extra></extra>'
     }
   ], {
-    margin:{l:48,r:48,t:12,b:42},
+    margin:{l:48,r:58,t:12,b:64},
     paper_bgcolor:'#fff', plot_bgcolor:'#fff',
     legend:{orientation:'h', y:1.08},
-    xaxis:{title:'Yıl', gridcolor:'#edf2f7'},
+    xaxis:{
+      title:'Yıl',
+      type:'category',
+      categoryorder:'array',
+      categoryarray:years,
+      tickmode:'array',
+      tickvals:years,
+      ticktext:years,
+      tickangle:-45,
+      automargin:true,
+      gridcolor:'#edf2f7'
+    },
     yaxis:{title:'Yayın', rangemode:'tozero', gridcolor:'#edf2f7'},
     yaxis2:{title:'Atıf', overlaying:'y', side:'right', rangemode:'tozero'}
   }, {displayModeBar:false,responsive:true});
