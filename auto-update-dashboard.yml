@@ -33,8 +33,8 @@ jobs:
       - name: Update dashboard data from Scopus and OpenAlex
         env:
           SCOPUS_API_KEY: ${{ secrets.SCOPUS_API_KEY }}
-          SCOPUS_AUTHOR_ID: ${{ vars.SCOPUS_AUTHOR_ID || '55877289000' }}
-          ORCID_ID: ${{ vars.ORCID_ID || '0000-0002-4978-1499' }}
+          SCOPUS_AUTHOR_ID: ${{ vars.SCOPUS || '55877289000' }}
+          ORCID_ID: ${{ vars.ORCID || '0000-0002-4978-1499' }}
           OPENALEX_EMAIL: ${{ vars.OPENALEX_EMAIL }}
           OPENALEX_API_KEY: ${{ secrets.OPENALEX_API_KEY }}
           GIT_AUTO_PUSH: "1"
